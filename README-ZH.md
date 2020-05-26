@@ -45,7 +45,7 @@ Language: [English](README.md) | 中文简体
 - [x] 自定义文本支持
 - [x] 完整的自定义主题
 - [x] 支持 MacOS
-
+- [ ] 支持 在common模式下支持不同类型的资源的最大数量
 ## 截图 📸
 
 ![1.png](screenshots/1.png)![2.png](screenshots/2.png)![3.png](screenshots/3.png)
