@@ -149,6 +149,8 @@ Add following content to `info.plist`.
 | textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()`             |
 | routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
+| typeExclusive  | `bool`          | The Asstes type mutually exclusive,   Follow-up Assets type fllow first type | false |
+
 
 ### Simple usage
 ```dart
@@ -181,6 +183,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
+  typeExclusive: false, // add + 
 );
 ```
 
@@ -202,6 +205,7 @@ AssetPicker.pickAssets(
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
+  typeExclusive: false, // add + 
 ).then((List<AssetEntity> assets) {
   /.../
 });

@@ -61,6 +61,7 @@ class RoundedCheckbox extends StatefulWidget {
   const RoundedCheckbox({
     Key key,
     @required this.value,
+    this.disable = false,
     this.tristate = false,
     @required this.onChanged,
     this.activeColor,
@@ -75,6 +76,9 @@ class RoundedCheckbox extends StatefulWidget {
   ///
   /// This property must not be null.
   final bool value;
+
+  /// disable callback, default: false
+  final bool disable;
 
   /// Called when the value of the checkbox should change.
   ///
@@ -152,6 +156,7 @@ class _RoundedCheckboxState extends State<RoundedCheckbox>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    final ValueChanged<bool> onChanged = widget.disable?null:widget.onChanged;
     assert(debugCheckHasMaterial(context));
     final ThemeData themeData = Theme.of(context);
     Size size;
@@ -171,10 +176,10 @@ class _RoundedCheckboxState extends State<RoundedCheckbox>
       activeColor: widget.activeColor ?? themeData.toggleableActiveColor,
       checkColor: widget.checkColor ?? const Color(0xFFFFFFFF),
       inactiveColor: widget.inactiveColor ??
-          (widget.onChanged != null
+          (onChanged != null
               ? themeData.unselectedWidgetColor
               : themeData.disabledColor),
-      onChanged: widget.onChanged,
+      onChanged: onChanged,
       additionalConstraints: additionalConstraints,
       vsync: this,
     );

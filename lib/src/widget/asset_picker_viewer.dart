@@ -29,6 +29,7 @@ class AssetPickerViewer extends StatefulWidget {
     @required this.themeData,
     this.selectedAssets,
     this.selectorProvider,
+    this.typeExclusive = false
   }) : super(key: key);
 
   /// Current previewing index in assets.
@@ -51,6 +52,10 @@ class AssetPickerViewer extends StatefulWidget {
   /// 主题
   final ThemeData themeData;
 
+  /// Asset type exclusive
+  /// 资源类型的排他性，即后续资源类型跟随第一个选择的资源类型互斥
+  final bool typeExclusive;
+
   @override
   AssetPickerViewerState createState() => AssetPickerViewerState();
 
@@ -63,6 +68,7 @@ class AssetPickerViewer extends StatefulWidget {
     @required ThemeData themeData,
     List<AssetEntity> selectedAssets,
     AssetPickerProvider selectorProvider,
+    bool typeExclusive = false
   }) async {
     try {
       final WidgetBuilder viewer = (BuildContext _) => AssetPickerViewer(
@@ -71,6 +77,7 @@ class AssetPickerViewer extends StatefulWidget {
             themeData: themeData,
             selectedAssets: selectedAssets,
             selectorProvider: selectorProvider,
+            typeExclusive: typeExclusive,
           );
       final List<AssetEntity> result =
           await Navigator.of(context).push<List<AssetEntity>>(
@@ -445,8 +452,10 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   final AssetEntity asset =
                       widget.assets.elementAt(snapshot.data);
                   final bool selected = currentlySelectedAssets.contains(asset);
+                  final bool disable = widget.typeExclusive && currentlySelectedAssets.isNotEmpty && asset.type.index!= currentlySelectedAssets[0].type.index;
                   return RoundedCheckbox(
                     value: selected,
+                    disable: disable,
                     onChanged: (bool value) {
                       if (selected) {
                         provider.unSelectAssetEntity(asset);

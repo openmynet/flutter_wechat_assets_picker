@@ -29,6 +29,7 @@ class AssetPicker extends StatelessWidget {
     int gridCount = 4,
     Color themeColor = C.themeColor,
     TextDelegate textDelegate,
+    this.typeExclusive = false,
   })  : assert(
           provider != null,
           'AssetPickerProvider must be provided and not null.',
@@ -63,6 +64,10 @@ class AssetPicker extends StatelessWidget {
   /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
 
+  /// Asset type exclusive
+  /// 后续资源类型跟随第一个选择的资源类型 
+  final bool typeExclusive;
+
   /// Static method to push with navigator.
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>> pickAssets(
@@ -79,6 +84,7 @@ class AssetPicker extends StatelessWidget {
     TextDelegate textDelegate,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
+    bool typeExclusive = false,
   }) async {
     if (maxAssets == null || maxAssets < 1) {
       throw ArgumentError('maxAssets must be greater than 1.');
@@ -108,6 +114,7 @@ class AssetPicker extends StatelessWidget {
           textDelegate: textDelegate,
           themeColor: themeColor,
           pickerTheme: pickerTheme,
+          typeExclusive: typeExclusive,
         );
         final List<AssetEntity> result =
             await Navigator.of(context).push<List<AssetEntity>>(
@@ -630,6 +637,7 @@ class AssetPicker extends StatelessWidget {
                 currentIndex: index,
                 assets: provider.currentAssets,
                 themeData: theme,
+                typeExclusive: typeExclusive
               );
             },
             child: AnimatedContainer(
@@ -890,6 +898,7 @@ class AssetPicker extends StatelessWidget {
                     selectedAssets: provider.selectedAssets,
                     selectorProvider: provider,
                     themeData: theme,
+                    typeExclusive: typeExclusive
                   );
                   if (result != null) {
                     Navigator.of(context).pop(result);

@@ -150,7 +150,7 @@ rootProject.allprojects {
 | textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
 | routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
-
+| typeExclusive  | `bool`          | 资源类型互斥，类似微信朋友圈功能，类型跟随第一选择的类型 | false |
 ### 简单的使用方法
 
 ```dart
@@ -183,6 +183,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
+  typeExclusive: false, // 新增
 );
 ```
 
@@ -204,6 +205,7 @@ AssetPicker.pickAssets(
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
+  typeExclusive: false, // 新增
 ).then((List<AssetEntity> assets) {
   /.../
 });

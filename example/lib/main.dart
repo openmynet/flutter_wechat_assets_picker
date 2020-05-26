@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
       gridCount: 4,
       selectedAssets: assets,
       requestType: RequestType.common,
+      typeExclusive: false
     );
     if (result != null) {
       assets = List<AssetEntity>.from(result);
