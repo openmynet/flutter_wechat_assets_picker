@@ -660,7 +660,7 @@ class AssetPicker extends StatelessWidget {
             },
             child: AnimatedContainer(
               duration: switchingPathDuration,
-              color: selected ? Colors.black45 : Colors.black.withOpacity(disable?0.64:0.1),
+              color: selected ? Colors.black45 : Colors.black.withOpacity(disable?0.26:0.1),
             ),
           ), // 点击预览同目录下所有资源
         );
