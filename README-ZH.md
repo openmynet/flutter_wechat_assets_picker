@@ -151,6 +151,8 @@ rootProject.allprojects {
 | routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 | typeExclusive  | `bool`          | 资源类型互斥，类似微信朋友圈功能，类型跟随第一选择的类型 | false |
+| selectableFilter | `SelectableFilter`          | 资源可选过滤器 | `null` |
+
 ### 简单的使用方法
 
 ```dart
@@ -183,7 +185,13 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
-  typeExclusive: false, // 新增
+  typeExclusive: true, // 新增
+  notSelectableFilter: (AssetEntity asset, List<AssetEntity> selectedAssets, bool notSelectable){
+    if(selectedAssets.isNotEmpty && selectedAssets[0].type == AssetType.video){
+      return !notSelectable && selectedAssets.length >= videoLimit;
+    }
+    return notSelectable;
+  }
 );
 ```
 
@@ -206,6 +214,12 @@ AssetPicker.pickAssets(
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
   typeExclusive: false, // 新增
+  selectableFilter: (AssetEntity asset, List<AssetEntity> selectedAssets, bool disable){
+    if(selectedAssets.isNotEmpty && selectedAssets[0].type == AssetType.video){
+      return !disable && selectedAssets.length >= videoLimit;
+    }
+    return disable;
+  }
 ).then((List<AssetEntity> assets) {
   /.../
 });

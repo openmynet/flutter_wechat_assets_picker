@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:photo_manager/photo_manager.dart';
+import './color_extension.dart';
 
-import 'package:example/color_extension.dart';
 
 const Color themeColor = Color(0xff00bc56);
 
@@ -36,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<AssetEntity> assets = <AssetEntity>[];
-
+  int videoLimit= 1;
   Future<void> selectAssets() async {
     final List<AssetEntity> result = await AssetPicker.pickAssets(
       context,
@@ -45,7 +46,13 @@ class _MyHomePageState extends State<MyHomePage> {
       gridCount: 4,
       selectedAssets: assets,
       requestType: RequestType.common,
-      typeExclusive: false
+      typeExclusive: true,
+      notSelectableFilter: (AssetEntity asset, List<AssetEntity> selectedAssets, bool notSelectable){
+        if(selectedAssets.isNotEmpty && selectedAssets[0].type == AssetType.video){
+          return !notSelectable && selectedAssets.length >= videoLimit;
+        }
+        return notSelectable;
+      }
     );
     if (result != null) {
       assets = List<AssetEntity>.from(result);

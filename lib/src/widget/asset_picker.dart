@@ -21,6 +21,10 @@ import 'builder/slide_page_transition_builder.dart';
 import 'fixed_appbar.dart';
 import 'platform_progress_indicator.dart';
 
+/// 返回指定项是否禁用选取功能
+/// true-> enable可选, false-> disable不可选
+typedef NotSelectableFilter = bool Function(AssetEntity asset, List<AssetEntity> selectedAssets, bool notSelectable);
+
 class AssetPicker extends StatelessWidget {
   AssetPicker({
     Key key,
@@ -30,6 +34,7 @@ class AssetPicker extends StatelessWidget {
     Color themeColor = C.themeColor,
     TextDelegate textDelegate,
     this.typeExclusive = false,
+    this.notSelectableFilter
   })  : assert(
           provider != null,
           'AssetPickerProvider must be provided and not null.',
@@ -55,7 +60,8 @@ class AssetPicker extends StatelessWidget {
   /// Main color for picker.
   /// 选择器的主题色
   final Color themeColor;
-
+  /// 资源禁用方法
+  final NotSelectableFilter notSelectableFilter;
   /// Theme for the picker.
   /// 选择器的主题
   ///
@@ -85,6 +91,7 @@ class AssetPicker extends StatelessWidget {
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
     bool typeExclusive = false,
+    NotSelectableFilter notSelectableFilter
   }) async {
     if (maxAssets == null || maxAssets < 1) {
       throw ArgumentError('maxAssets must be greater than 1.');
@@ -115,6 +122,7 @@ class AssetPicker extends StatelessWidget {
           themeColor: themeColor,
           pickerTheme: pickerTheme,
           typeExclusive: typeExclusive,
+          notSelectableFilter: notSelectableFilter,
         );
         final List<AssetEntity> result =
             await Navigator.of(context).push<List<AssetEntity>>(
@@ -155,7 +163,16 @@ class AssetPicker extends StatelessWidget {
       realDebugPrint('Error when unregistering assets callback: $e');
     }
   }
-
+  /// Asset is notSelectabled; 
+  /// 资源是否处于禁选状态
+  bool notSelectabled(AssetEntity asset){
+    final List<AssetEntity> _selectedAssets = provider.selectedAssets;
+    final bool notSelectable = typeExclusive && _selectedAssets.isNotEmpty && asset.type.index!= _selectedAssets[0].type.index;
+    if(notSelectableFilter!=null){
+      return notSelectableFilter(asset, _selectedAssets, notSelectable);
+    }
+    return notSelectable;
+  }
   /// Whether the current platform is Apple OS.
   /// 当前平台是否苹果系列系统 (iOS & MacOS)
   bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
@@ -629,6 +646,7 @@ class AssetPicker extends StatelessWidget {
           provider.selectedAssets,
       builder: (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
         final bool selected = selectedAssets.contains(asset);
+        final bool disable = notSelectabled(asset);
         return Positioned.fill(
           child: GestureDetector(
             onTap: () {
@@ -642,7 +660,7 @@ class AssetPicker extends StatelessWidget {
             },
             child: AnimatedContainer(
               duration: switchingPathDuration,
-              color: selected ? Colors.black45 : Colors.black.withOpacity(0.1),
+              color: selected ? Colors.black45 : Colors.black.withOpacity(disable?0.64:0.1),
             ),
           ), // 点击预览同目录下所有资源
         );
@@ -658,12 +676,17 @@ class AssetPicker extends StatelessWidget {
           provider.selectedAssets,
       builder: (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
         final bool selected = selectedAssets.contains(asset);
+        final bool disable = notSelectabled(asset);
+        final Border unselectBorder = disable?null:Border.all(color: Colors.white, width: 2.0);
         return Positioned(
           top: 0.0,
           right: 0.0,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
+              if(disable){
+                return;
+              }
               if (selected) {
                 provider.unSelectAsset(asset);
               } else {
@@ -680,7 +703,7 @@ class AssetPicker extends StatelessWidget {
               height: isAppleOS ? 28.0 : 20.0,
               decoration: BoxDecoration(
                 border: !selected
-                    ? Border.all(color: Colors.white, width: 2.0)
+                    ? unselectBorder
                     : null,
                 color: selected ? themeColor : null,
                 shape: BoxShape.circle,

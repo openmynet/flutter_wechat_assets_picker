@@ -149,7 +149,8 @@ Add following content to `info.plist`.
 | textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()`             |
 | routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
-| typeExclusive  | `bool`          | The Asstes type mutually exclusive,   Follow-up Assets type fllow first type | false |
+| typeExclusive  | `bool`              | The Asstes type mutually exclusive                           | `false`                             |
+| selectableFilter | `SelectableFilter`| 资源可选过滤器                                                 | `null`                              |
 
 
 ### Simple usage
@@ -183,7 +184,13 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
-  typeExclusive: false, // add + 
+  typeExclusive: true, // add + 
+  notSelectableFilter: (AssetEntity asset, List<AssetEntity> selectedAssets, bool notSelectable){
+    if(selectedAssets.isNotEmpty && selectedAssets[0].type == AssetType.video){
+      return !notSelectable && selectedAssets.length >= videoLimit;
+    }
+    return notSelectable;
+  }
 );
 ```
 
@@ -191,7 +198,7 @@ or
 
 ```dart
 List<AssetEntity> assets = <AssetEntity>{};
-
+int videoLimit = 1; // Select video limit
 AssetPicker.pickAssets(
   context,
   maxAssets: 9,
@@ -206,6 +213,12 @@ AssetPicker.pickAssets(
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
   typeExclusive: false, // add + 
+  selectableFilter: (AssetEntity asset, List<AssetEntity> selectedAssets, bool disable){
+    if(selectedAssets.isNotEmpty && selectedAssets[0].type == AssetType.video){
+      return !disable && selectedAssets.length >= videoLimit;
+    }
+    return disable;
+  }
 ).then((List<AssetEntity> assets) {
   /.../
 });
