@@ -151,7 +151,7 @@ rootProject.allprojects {
 | routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 | typeExclusive  | `bool`          | 资源类型互斥，类似微信朋友圈功能，类型跟随第一选择的类型 | false |
-| selectableFilter | `SelectableFilter`          | 资源可选过滤器 | `null` |
+| notSelectableFilter | `NotSelectableFilter`          | 资源不可选过滤器 | `null` |
 
 ### 简单的使用方法
 

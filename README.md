@@ -150,7 +150,7 @@ Add following content to `info.plist`.
 | routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
 | typeExclusive  | `bool`              | The Asstes type mutually exclusive                           | `false`                             |
-| selectableFilter | `SelectableFilter`| 资源可选过滤器                                                 | `null`                              |
+| notSelectableFilter | `NotSelectableFilter`| Not Selectable Filter                                  | `null`                              |
 
 
 ### Simple usage
