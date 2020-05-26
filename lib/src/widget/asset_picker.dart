@@ -684,12 +684,12 @@ class AssetPicker extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              if(disable){
-                return;
-              }
               if (selected) {
                 provider.unSelectAsset(asset);
               } else {
+                if(disable) {
+                  return;
+                }
                 if (isSingleAssetMode) {
                   provider.selectedAssets.clear();
                 }
