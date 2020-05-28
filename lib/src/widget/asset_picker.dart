@@ -1061,6 +1061,7 @@ class AssetPicker extends StatelessWidget {
           leading: backButton(context),
           actionsPadding: const EdgeInsets.only(right: 14.0),
           blurRadius: appleOSBlurRadius,
+          actions: <Widget>[confirmButton(context)],
         ),
       ],
     );
